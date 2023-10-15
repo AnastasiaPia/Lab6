@@ -1,41 +1,92 @@
-brute_force_knapsack <- function(cx, W) {
-  # Check input validity
-  if (!is.data.frame(cx) || !all(c("v", "w") %in% colnames(cx))) {
-    stop("Input must be a data.frame with columns 'v' and 'w'.")
+#'Brute force knapsack
+#'
+#'@description This function implements the brute force knapsack.
+#'
+#'@param x It represents the input data frame with 2 columns w (weights) and v (values).
+#'@param W It represents the knapsack size.
+#'@param parallel It determines whether parallel computation is used and it is logical.
+#'
+#'@importFrom parallel detectCores makeCluster
+#'@importFrom methods is.data.frame is.numeric
+#'@importFrom utils intToBits
+#'
+#'@return list It contains the maximum value and the elements selected to maximize the knapsack value.
+#'
+#'@examples
+#'#Create sample data
+#'set.seed(42)
+#'n <- 2000
+#'knapsack_objects <- data.frame(w = sample(1:4000, size = n, replace = TRUE),
+#'                               v = runif(n, min = 0, max = 10000))
+#'
+#' # Run the brute force knapsack algorithm
+#' result <- brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
+#'
+#'
+#'
+#'@export brute_force_knapsack
+
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+n <- 2000
+knapsack_objects <-
+  data.frame(w = sample(1:4000, size = n, replace = TRUE),
+             v = runif(n = n, 0, 10000))
+
+
+brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show the parallel computation
+  if (!is.data.frame(x)) {
+    stop("The x must be a data frame.")
   }
-
-  if (any(cx$v <= 0) || any(cx$w <= 0) || W <= 0) {
-    stop("All values in the data.frame and W must be positive.")
+  if (!is.numeric(W) || W <= 0) {
+    stop("W must be a positive numeric value.")
   }
-
-  n <- nrow(cx)
-  max_value <- 0
-  best_combination <- integer(n)
-
-  # Generate all binary combinations for 2^n possibilities
-  for (i in 1:(2^n - 1)) {
-    combination <- as.integer(rev(intToBits(i))[1:n])  # Reverse and trim to n bits
-    total_weight <- sum(combination * cx$w)
-
-    if (total_weight <= W) {
-      total_value <- sum(combination * cx$v)
-      if (total_value > max_value) {
-        max_value <- total_value
-        best_combination <- combination
-      }
+  if (!all(c("w", "v") %in% colnames(x))) {
+    stop("The x must be a data frame with column names 'w' and 'v'.")
+  }
+  if (!all(x > 0, na.rm = TRUE)) {
+    stop("The x must be a data frame with only positive values.")
+  }
+  x <- x[x$w <= W, ]
+  n <- nrow(x)
+  big_o<- 2 ^ n - 1    #the number of combinations of items 2^n-1 in the knapsack problem
+  if (parallel) {
+    cores <- detectCores()
+    cl <- makeCluster(cores)
+    combinations <- parLapply(cl, 1:big_o, function(x) {
+      as.integer(head(intToBits(x), n))
+    })
+    weight <- parSapply(cl, combinations, function(x) {
+      sum(x$w[as.logical(x)])
+    })
+    combinations <- combinations[weight <= W]
+    value <- parSapply(cl, combinations, function(x) {
+      sum(x$v[as.logical(x)])
+    })
+    i <- which.max(value)
+    value <- round(value[i])
+    elements <- as.integer(rownames(x[as.logical(combinations[[i]]), ]))
+    stopCluster(cl)
+    return(list(value = value, elements = elements))
+  } else {
+    combinations <- matrix(nrow = big_o, ncol = n)
+    for (i in 1:big_o) {
+      combinations[i, ] <- as.integer(head(intToBits(i), n))
     }
+    weight <- sapply(1:big_o, function(i) sum(x$w[as.logical(combinations[i, ])])
+    )
+    combinations <- combinations[weight <= W, ]
+    value <- sapply(1:nrow(combinations), function(i) sum(x$v[as.logical(combinations[i, ])])
+    )
+    i <- which.max(value)
+    value <- round(value[i])
+    elements <- as.integer(rownames(x[as.logical(combinations[i, ]), ]))
+    return(list(value = value, elements = elements))
   }
-
-  # Get the indices of the selected elements using best_combination
-  selected_indices <- which(best_combination == 1)
-
-  return(list(value = max_value, elements = selected_indices))
 }
 
-# Example usage:
-# Assuming that knapsack_objects is your data.frame with 'v' and 'w' columns
-result <- brute_force_knapsack(knapsack_objects[1:8,], W = 3500)
 
-# Print the maximum value and selected elements
-cat("Value:", result$value, "\n")
-cat("Elements:", result$elements, "\n")
+brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
+brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
+brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
+brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
