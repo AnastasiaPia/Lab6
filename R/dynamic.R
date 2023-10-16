@@ -26,9 +26,10 @@
 
 
 knapsack_dynamic <- function(x, W) {
-  if (!is.data.frame(x)) {
-    stop("The x must be a data frame.")
+  if (!is.data.frame(x) || !is.numeric(x$w) || !is.numeric(x$v)) {
+    stop("The x must be a data frame with column names 'w' and 'v'.")
   }
+
   if (!is.numeric(W)) {
     stop("W must be a number.")
   }
@@ -40,6 +41,9 @@ knapsack_dynamic <- function(x, W) {
   }
   if (!all(x > 0, na.rm = TRUE)) {
     stop("You must provide positive values for x.")
+  }
+  if (nrow(x) == 0) {
+    return(list(0, numeric(0)))
   }
   for (i in x$w) {
     if (i %% 1 != 0)
