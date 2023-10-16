@@ -20,6 +20,12 @@
 #             v = runif(n = n, 0, 10000))
 #}
 
+set.seed(123)
+knapsack_objects_large <- data.frame(
+  ID = 1:1000000,
+  v = sample(1:100, 1000000, replace = TRUE),
+  w = sample(1:50, 1000000, replace = TRUE)
+)
 
 
 greedy_knapsack <- function(x, W) {
@@ -44,7 +50,7 @@ greedy_knapsack <- function(x, W) {
   total_weight <- 0
   n<- nrow(x)
   for (i in 1:n) {
-    if (total_weight <= W) {
+    if ((total_weight + x$w[i]) <= W) {
       total_weight <- total_weight + x$w[i]
       i<-i+1
     }else{
@@ -57,6 +63,10 @@ greedy_knapsack <- function(x, W) {
   return(result)
 }
 
+
+W <- 50000
+timing <- system.time(result <- greedy_knapsack(x = knapsack_objects_large, W = W))
+print(timing)
 
 
 #result <- greedy_knapsack(x = knapsack_objects[1:1200, ], W = 2000)
@@ -86,3 +96,4 @@ greedy_knapsack <- function(x, W) {
 # Measure the execution time for the greedy algorithm
 #timing <- system.time(greedy_knapsack(x = knapsack_objects_large, W = W))
 #print(timing)
+
