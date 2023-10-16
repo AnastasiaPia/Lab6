@@ -41,11 +41,11 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
   if (parallel) {
     cores <- parallel::detectCores()
     cl <- parallel::makeCluster(cores)
-    combinations <- parLapply(cl, 1:big_o, function(x) {
+    combinations <- parallel::parLapply(cl, 1:big_o, function(x) {
       as.integer(head(intToBits(x), n))
     })
-    weight <- unlist(lapply(combinations, function(x) {
-      sum(x$w[as.logical(x)])
+    weight <- unlist(lapply(combinations, function(combin) {
+      sum(x$w[as.logical(combin)])
     }))
 
     n <- length(combinations)
@@ -59,7 +59,7 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
     i <- which.max(value)
     value <- round(value[i])
     elements <- as.integer(rownames(x[as.logical(combinations[[i]]), ]))
-    stopCluster(cl)
+    parallel::stopCluster(cl)
     return(list(value = value, elements = elements))
   } else {
     combinations <- matrix(nrow = big_o, ncol = n)

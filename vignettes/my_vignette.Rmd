@@ -1,8 +1,8 @@
 ---
-title: "my_vignette"
+title: "Lab6_report"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my_vignette}
+  %\VignetteIndexEntry{Lab6_report}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,3 +17,100 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(Lab6)
 ```
+
+
+#Description
+
+The package Lab6 includes the following implementations of the knapsack problem solution: Brute force ,dynamic and greedy heuristic.
+
+
+```{r}
+library(Lab6)
+library(parallel)
+```
+
+#Data
+
+```{r}
+RNGversion(min(as.character(getRversion()),"3.5.3"))
+
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+n <- 2000
+knapsack_objects <- data.frame( w=sample(1:4000, size = n, replace = TRUE),
+v=runif(n = n, 0, 10000)
+)
+```
+
+#Brute force
+
+```{r}
+brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
+brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
+brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
+brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
+```
+
+How much time does it take to run the algorithm for n=16 objects?
+
+```{r}
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W =3500))
+```
+
+
+It took 0.04 sec to run the algorithm for 16 objects.
+
+
+#Dynamic
+
+```{r}
+knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
+knapsack_dynamic(x = knapsack_objects[1:12,], W = 3500)
+knapsack_dynamic(x = knapsack_objects[1:8,], W = 2000)
+knapsack_dynamic(x = knapsack_objects[1:12,], W = 2000)
+```
+
+
+
+How much time does it take to run the algorithm for n = 500 objects?
+
+
+```{r}
+system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W =3500))
+```
+
+It took 2.14 sec to run the algorithm for 500 objects.
+
+
+#Greedy heuristic
+
+```{r}
+greedy_knapsack(x = knapsack_objects[1:800,], W = 3500)
+greedy_knapsack(x = knapsack_objects[1:1200,], W = 2000)
+```
+
+How much time does it take to run the algorithm for n = 1000000 objects?
+
+
+```{r}
+system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W =3500))
+```
+
+
+It took 0.72 sec to run the algorithm for 1000000 objects.
+
+
+#Parallelizing brute force
+
+What performance gain could you get by parallelizing brute force search?
+
+#```{r}
+#system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 2000))
+#system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 2000, parallel = TRUE))
+#```
+
+
+
+
+
+
+
