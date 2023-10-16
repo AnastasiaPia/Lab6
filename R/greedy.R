@@ -64,9 +64,9 @@ greedy_knapsack <- function(x, W) {
 }
 
 
-W <- 50000
-timing <- system.time(result <- greedy_knapsack(x = knapsack_objects_large, W = W))
-print(timing)
+#W <- 50000
+#timing <- system.time(result <- greedy_knapsack(x = knapsack_objects_large, W = W))
+#print(timing)
 
 
 #result <- greedy_knapsack(x = knapsack_objects[1:1200, ], W = 2000)
