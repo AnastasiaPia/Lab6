@@ -26,12 +26,12 @@
 #'
 #'@export brute_force_knapsack
 
-RNGversion(min(as.character(getRversion()), "3.5.3"))
+generator<- function (){RNGversion(min(as.character(getRversion()), "3.5.3"))
 set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
 n <- 2000
 knapsack_objects <-
   data.frame(w = sample(1:4000, size = n, replace = TRUE),
-             v = runif(n = n, 0, 10000))
+             v = runif(n = n, 0, 10000))}
 
 
 brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show the parallel computation
@@ -59,10 +59,14 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
     weight <- parSapply(cl, combinations, function(x) {
       sum(x$w[as.logical(x)])
     })
-    combinations <- combinations[weight <= W]
-    value <- parSapply(cl, combinations, function(x) {
-      sum(x$v[as.logical(x)])
-    })
+    n <- length(combinations)
+    values <- numeric(n)
+
+    for (i in 1:n) {
+      subset_values <- x$v[as.logical(combinations[[i]])]
+      values[i] <- sum(subset_values)
+    }
+
     i <- which.max(value)
     value <- round(value[i])
     elements <- as.integer(rownames(x[as.logical(combinations[[i]]), ]))
