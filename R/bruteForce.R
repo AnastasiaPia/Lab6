@@ -12,26 +12,14 @@
 #'
 #'@return list It contains the maximum value and the elements selected to maximize the knapsack value.
 #'
-#'@examples
-#'#Create sample data
-#'set.seed(42)
-#'n <- 2000
-#'knapsack_objects <- data.frame(w = sample(1:4000, size = n, replace = TRUE),
-#'                               v = runif(n, min = 0, max = 10000))
-#'
-#' # Run the brute force knapsack algorithm
-#' result <- brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
-#'
-#'
-#'
 #'@export brute_force_knapsack
 
-generator<- function (){RNGversion(min(as.character(getRversion()), "3.5.3"))
-set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
-n <- 2000
-knapsack_objects <-
-  data.frame(w = sample(1:4000, size = n, replace = TRUE),
-             v = runif(n = n, 0, 10000))}
+#generator<- function (){RNGversion(min(as.character(getRversion()), "3.5.3"))
+#set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+#n <- 2000
+#knapsack_objects <-
+#  data.frame(w = sample(1:4000, size = n, replace = TRUE),
+#             v = runif(n = n, 0, 10000))}
 
 
 brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show the parallel computation
@@ -51,7 +39,7 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
   n <- nrow(x)
   big_o<- 2 ^ n - 1    #the number of combinations of items 2^n-1 in the knapsack problem
   if (parallel) {
-    cores <- detectCores()
+    cores <- parallel::detectCores()
     cl <- makeCluster(cores)
     combinations <- parLapply(cl, 1:big_o, function(x) {
       as.integer(head(intToBits(x), n))
@@ -90,7 +78,7 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
 }
 
 
-brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
-brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
-brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
-brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
+#brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
+#brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
+#brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
+#brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
