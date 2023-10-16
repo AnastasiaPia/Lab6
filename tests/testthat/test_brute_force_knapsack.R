@@ -1,10 +1,10 @@
-
+context("brute_force_knapsack")
 
 
 library(testthat)
-library(Lab6)
+#library(Lab6)
 
-test_check("Lab6")
+#test_check("Lab6")
 
 
 

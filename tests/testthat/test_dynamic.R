@@ -1,7 +1,8 @@
+context("knapsack_dynamic")
 library(testthat)
 
 # Load the knapsack_dynamic function
-source("dynamic.R")
+#source("dynamic.R")
 
 # Test 1: Test with a simple data frame
 test_that("Test with a simple data frame", {
