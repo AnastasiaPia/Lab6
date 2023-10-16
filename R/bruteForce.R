@@ -40,9 +40,9 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
   big_o<- 2 ^ n - 1    #the number of combinations of items 2^n-1 in the knapsack problem
   if (parallel) {
     cores <- parallel::detectCores()
-    cl <- makeCluster(cores)
+    cl <- parallel::makeCluster(cores)
     combinations <- parLapply(cl, 1:big_o, function(x) {
-      as.integer(head(intToBits(x), n))
+      as.integer(head(utils::intToBits(x), n))
     })
     weight <- parSapply(cl, combinations, function(x) {
       sum(x$w[as.logical(x)])
@@ -63,7 +63,7 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
   } else {
     combinations <- matrix(nrow = big_o, ncol = n)
     for (i in 1:big_o) {
-      combinations[i, ] <- as.integer(head(intToBits(i), n))
+      combinations[i, ] <- as.integer(head(utils::intToBits(i), n))
     }
     weight <- sapply(1:big_o, function(i) sum(x$w[as.logical(combinations[i, ])])
     )
