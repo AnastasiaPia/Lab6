@@ -20,12 +20,12 @@
 #             v = runif(n = n, 0, 10000))
 #}
 
-set.seed(123)
-knapsack_objects_large <- data.frame(
-  ID = 1:1000000,
-  v = sample(1:100, 1000000, replace = TRUE),
-  w = sample(1:50, 1000000, replace = TRUE)
-)
+#set.seed(123)
+#knapsack_objects_large <- data.frame(
+#  ID = 1:1000000,
+#  v = sample(1:100, 1000000, replace = TRUE),
+#  w = sample(1:50, 1000000, replace = TRUE)
+#)
 
 
 greedy_knapsack <- function(x, W) {
