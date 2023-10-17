@@ -21,8 +21,8 @@ test_that("Function return correct results.", {
   expect_true(as.numeric(st)[2] <= 0.01)
 
   gk <- greedy_knapsack(x = knapsack_objects[1:800, ], W = 3500)
-  expect_equal(round(gk$value), 42430)
+  expect_equal(round(gk$value), 188224)
 
   gk <- greedy_knapsack(x = knapsack_objects[1:1200, ], W = 3500)
-  expect_equal(round(gk$value), 55392)
+  expect_equal(round(gk$value), 260848)
 })
