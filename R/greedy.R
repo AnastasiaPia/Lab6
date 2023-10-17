@@ -44,8 +44,8 @@ greedy_knapsack <- function(x, W) {
   if (!all(x >= 0, na.rm = TRUE)) {
     stop("All values in x must be non-negative.")
   }
-  x <- subset(x, v <= W)
-  x <- x[order(x$v/x$w , decreasing = TRUE), ]
+  #x <- subset(x, v <= W)
+  x <- x[order(x[,"v"]/x[,"w"], decreasing = TRUE), ]
 
   total_weight <- 0
   n<- nrow(x)
