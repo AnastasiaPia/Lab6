@@ -56,11 +56,11 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
       values[i] <- sum(subset_values)
     }
 
-    i <- which.max(value)                                                  #The index i of the combination with the maximum value is determined using which.max.
-    value <- round(value[i])                                               #The maximum value is rounded and assigned to the value variable
+    i <- which.max(values)                                                  #The index i of the combination with the maximum value is determined using which.max.
+    values <- round(values[i])                                               #The maximum value is rounded and assigned to the value variable
     elements <- as.integer(rownames(x[as.logical(combinations[[i]]), ]))   #The elements (items) included in the knapsack are extracted based on the chosen combination and stored in the elements variable.
     parallel::stopCluster(cl)                                              #The cluster of workers is stopped using parallel::stopCluster
-    return(list(value = value, elements = elements))
+    return(list(value = values, elements = elements))
   } else {                                                                 #If parallel is set to FALSE, it enters the non-parallel computation section.
     combinations <- matrix(nrow = big_o, ncol = n)                         #The combinations matrix is initialized to store all possible combinations.
     for (i in 1:big_o) {
@@ -79,7 +79,7 @@ brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show t
 }
 
 
-#brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
-#brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
-#brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
-#brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
+brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
+brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
+brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
+brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
