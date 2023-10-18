@@ -15,5 +15,5 @@ knapsack_dynamic(x, W)
 A list with the maximum value and a vector of selected item indices.
 }
 \description{
-This function solves the 0/1 knapsack problem using dynamic programming.
+This function solves the 0/1 knapsack problem using dynamic programming. The knapsack problem is a classic optimization problem where you must choose a subset of items with given weights and values to maximize the total value while not exceeding a given weight limit.
 }
