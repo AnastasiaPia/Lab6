@@ -93,3 +93,4 @@ knapsack_dynamic <- function(x, W) {                                            
 #knapsack_dynamic(x = knapsack_objects[1:12, ], W = 3500)
 #knapsack_dynamic(x = knapsack_objects[1:8, ], W = 2000)
 #knapsack_dynamic(x = knapsack_objects[1:12, ], W = 2000)
+#system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W =3500))

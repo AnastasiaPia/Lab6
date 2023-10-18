@@ -66,7 +66,7 @@ brute_force_knapsack <- function(x, W, parallel = FALSE) {
 
 #brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
 #brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500, TRUE)
-#brute_force_knapsack(x = knapsack_objects[1:12,], W = 3500)
+#system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 #brute_force_knapsack(x = knapsack_objects[1:8,], W = 2000)
 #brute_force_knapsack(x = knapsack_objects[1:12,], W = 2000)
 #system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500))

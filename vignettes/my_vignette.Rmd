@@ -57,7 +57,7 @@ system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W =3500))
 ```
 
 
-It took 0.04 sec to run the algorithm for 16 objects.
+It took 2.47 sec to run the algorithm for 16 objects.
 
 
 #Dynamic
@@ -78,7 +78,7 @@ How much time does it take to run the algorithm for n = 500 objects?
 system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W =3500))
 ```
 
-It took 2.14 sec to run the algorithm for 500 objects.
+It took 2.11 sec to run the algorithm for 500 objects.
 
 
 #Greedy heuristic
@@ -96,7 +96,7 @@ system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W =3500))
 ```
 
 
-It took 0.72 sec to run the algorithm for 1000000 objects.
+It took 0.96 sec to run the algorithm for 1000000 objects.
 
 
 #Parallelizing brute force
@@ -112,6 +112,40 @@ system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500))
 system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500, parallel = TRUE))
 ```
 
+It took 0.03 sec to run the algorithm for 8 objects and 0.02 to run the algorithm for 8 objects using the parallel method.
+Speedup = 0.03 seconds / 0.02 seconds = 1.5 
+By parallelizing the brute force for the knapsack problem with 8 objects, we achieved a speedup of 1.5, which means the parallel version is 1.5 times faster than the non-parallel version.
+
+
+
+
+#Profiling the code with parallel method
+
+If parallel TRUE:
+
+temp_dfs <- parallel::mclapply(combinations, function(y) {
+      selected_items <- x[as.logical(y), ]
+      list(value = sum(selected_items$v), weight = sum(selected_items$w))
+    })
+    values <- sapply(temp_dfs, function(x) x$value)
+    weights <- sapply(temp_dfs, function(x) x$weight)
+
+
+
+
+If parallel FALSE:
+
+for (i in counter) {
+      selected_items <- x[as.logical(combinations[[i]]), ]
+      values[i] <- sum(selected_items$v)
+      weights[i] <- sum(selected_items$w)
+    }
+
+
+
+It took 0.03 sec to run the algorithm for 8 objects and 0.02 to run the algorithm for 8 objects using the parallel method.
+Speedup = 0.03 seconds / 0.02 seconds = 1.5 
+By parallelizing the brute force for the knapsack problem with 8 objects, we achieved a speedup of 1.5, which means the parallel version is 1.5 times faster than the non-parallel version.
 
 
 
