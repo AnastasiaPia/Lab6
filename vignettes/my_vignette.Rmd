@@ -103,10 +103,14 @@ It took 0.72 sec to run the algorithm for 1000000 objects.
 
 What performance gain could you get by parallelizing brute force search?
 
-#```{r}
-#system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 2000))
-#system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 2000, parallel = TRUE))
-#```
+
+```{r}
+system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500))
+```
+
+```{r}
+system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500, parallel = TRUE))
+```
 
 
 
