@@ -15,5 +15,5 @@ greedy_knapsack(x, W)
 A list with the maximum value and a vector of selected item indices.
 }
 \description{
-This function solves the knapsack problem using a greedy approach.
+This function solves the knapsack problem using a greedy approach. In this approach, items are sorted by their value-to-weight ratio in descending order and then selected one by one until the knapsack's weight limit is reached.
 }

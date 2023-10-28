@@ -22,64 +22,53 @@
 #             v = runif(n = n, 0, 10000))}
 
 
-brute_force_knapsack<-function(x, W, parallel = FALSE) {  #parallel is to show the parallel computation
+brute_force_knapsack <- function(x, W, parallel = FALSE) {
   if (!is.data.frame(x)) {
-    stop("The x must be a data frame.")
+    stop("The 'x' must be a data frame.")
   }
   if (!is.numeric(W) || W <= 0) {
     stop("W must be a positive numeric value.")
   }
   if (!all(c("w", "v") %in% colnames(x))) {
-    stop("The x must be a data frame with column names 'w' and 'v'.")
+    stop("The 'x' must be a data frame with column names 'w' and 'v'.")
   }
-  if (!all(x > 0, na.rm = TRUE)) {
-    stop("The x must be a data frame with only positive values.")
+  if (!all(x$w > 0) || !all(x$v > 0)) {
+    stop("The 'x' must be a data frame with only positive values.")
   }
-  x <- x[x$w <= W, ]
+
   n <- nrow(x)
-  big_o<- 2 ^ n - 1    #the number of combinations of items 2^n-1 in the knapsack problem
+  counter <- 1:2^n
+  combinations <- lapply(counter - 1, function(i) as.integer(intToBits(i)[1:n]))
+  values <- weights <- rep(0, length(counter))
+
   if (parallel) {
-    cores <- parallel::detectCores()
-    cl <- parallel::makeCluster(cores)
-    combinations <- parallel::parLapply(cl, 1:big_o, function(x) {
-      as.integer(head(intToBits(x), n))
+    temp_dfs <- parallel::mclapply(combinations, function(y) {
+      selected_items <- x[as.logical(y), ]
+      list(value = sum(selected_items$v), weight = sum(selected_items$w))
     })
-    weight <- unlist(lapply(combinations, function(combin) {
-      sum(x$w[as.logical(combin)])
-    }))
-
-    n <- length(combinations)
-    values <- numeric(n)
-
-    for (i in 1:n) {
-      subset_values <- x$v[as.logical(combinations[[i]])]
-      values[i] <- sum(subset_values)
-    }
-
-    i <- which.max(value)
-    value <- round(value[i])
-    elements <- as.integer(rownames(x[as.logical(combinations[[i]]), ]))
-    parallel::stopCluster(cl)
-    return(list(value = value, elements = elements))
+    values <- sapply(temp_dfs, function(x) x$value)
+    weights <- sapply(temp_dfs, function(x) x$weight)
   } else {
-    combinations <- matrix(nrow = big_o, ncol = n)
-    for (i in 1:big_o) {
-      combinations[i, ] <- as.integer(head(intToBits(i), n))
+    for (i in counter) {
+      selected_items <- x[as.logical(combinations[[i]]), ]
+      values[i] <- sum(selected_items$v)
+      weights[i] <- sum(selected_items$w)
     }
-    weight <- sapply(1:big_o, function(i) sum(x$w[as.logical(combinations[i, ])])
-    )
-    combinations <- combinations[weight <= W, ]
-    value <- sapply(1:nrow(combinations), function(i) sum(x$v[as.logical(combinations[i, ])])
-    )
-    i <- which.max(value)
-    value <- round(value[i])
-    elements <- as.integer(rownames(x[as.logical(combinations[i, ]), ]))
-    return(list(value = value, elements = elements))
   }
+
+  relevant_indices <- which(weights <= W)
+  max_value <- max(values[relevant_indices])
+  result_index <- which(values == max_value)
+  elements <- which(as.logical(combinations[[result_index]]))
+
+  return(list(value = round(max_value), elements = elements))
 }
 
+#brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
+#brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500, TRUE)
+#system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
+#brute_force_knapsack(x = knapsack_objects[1:8,], W = 2000)
+#brute_force_knapsack(x = knapsack_objects[1:12,], W = 2000)
+#system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500))
+#system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500, parallel = TRUE))
 
-#brute_force_knapsack(x = knapsack_objects[1:8, ], W = 3500)
-#brute_force_knapsack(x = knapsack_objects[1:12, ], W = 3500)
-#brute_force_knapsack(x = knapsack_objects[1:8, ], W = 2000)
-#brute_force_knapsack(x = knapsack_objects[1:12, ], W = 2000)
