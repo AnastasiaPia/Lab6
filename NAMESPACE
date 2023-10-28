@@ -1,2 +1,3 @@
 exportPattern("^[[:alpha:]]+")
 importFrom("utils", "head")
+import(parallel)
